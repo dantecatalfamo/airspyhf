@@ -34,6 +34,7 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
+    const static = b.option(bool, "static", "Statically link tools") orelse false;
     const version = getVersion(b) catch unreachable;
 
     const shared_lib = b.addSharedLibrary(.{
@@ -59,6 +60,7 @@ pub fn build(b: *std.Build) void {
     }
 
 
+
     inline for (programs) |program| {
         const exe = b.addExecutable(.{
             .name = "airspyhf_" ++ program,
@@ -68,7 +70,7 @@ pub fn build(b: *std.Build) void {
 
         exe.linkLibC();
         exe.linkSystemLibrary("libusb-1.0");
-        exe.linkLibrary(shared_lib);
+        exe.linkLibrary(if (static) static_lib else shared_lib);
         exe.addSystemIncludePath(.{ .path = "libairspyhf/src" });
         exe.addCSourceFiles(&.{"tools/src/airspyhf_" ++ program ++ ".c"}, &.{});
 
