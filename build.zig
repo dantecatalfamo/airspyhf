@@ -68,7 +68,7 @@ pub fn build(b: *std.Build) void {
 
         exe.linkLibC();
         exe.linkSystemLibrary("libusb-1.0");
-        exe.linkLibrary(static_lib);
+        exe.linkLibrary(shared_lib);
         exe.addSystemIncludePath(.{ .path = "libairspyhf/src" });
         exe.addCSourceFiles(&.{"tools/src/airspyhf_" ++ program ++ ".c"}, &.{});
 
